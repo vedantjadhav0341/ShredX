@@ -1,5 +1,5 @@
 import streamlit as st
-from groq import Groq
+import Groq
 import pandas as pd
 from datetime import date
 import random
@@ -10,8 +10,7 @@ st.set_page_config(page_title="ShredX", page_icon="💎", layout="wide")
 # ---------------- API ---------------- #
 import os
 API_KEY = os.getenv("GROQ_API_KEY")
-client = Groq(api_key=API_KEY)
-
+client = groq.Groq(api_key=API_KEY)
 # ---------------- CSS ---------------- #
 st.markdown("""
 <style>
