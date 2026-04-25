@@ -1,5 +1,5 @@
 import streamlit as st
-from groq import Groq
+from openai import OpenAI
 import pandas as pd
 from datetime import date
 import random
@@ -8,9 +8,13 @@ import random
 st.set_page_config(page_title="ShredX", page_icon="💎", layout="wide")
 
 # ---------------- API ---------------- #
-import os
-API_KEY = os.getenv("GROQ_API_KEY")
-client = Groq(api_key=API_KEY)
+API_KEY = "your_api_key_here"
+
+client = OpenAI(
+    api_key=API_KEY,
+    base_url="https://api.groq.com/openai/v1"
+)
+
 # ---------------- CSS ---------------- #
 st.markdown("""
 <style>
@@ -57,7 +61,7 @@ if "page" not in st.session_state:
     st.session_state.page = "login"
 
 if "users" not in st.session_state:
-    st.session_state.users = {}  # username: password
+    st.session_state.users = {}
 
 if "messages" not in st.session_state:
     st.session_state.messages = []
@@ -65,15 +69,15 @@ if "messages" not in st.session_state:
 if "progress" not in st.session_state:
     st.session_state.progress = []
 
-# ================= AUTH PAGES ================= #
+# ================= AUTH ================= #
 if not st.session_state.logged_in:
 
     st.markdown("<div class='main-container'>", unsafe_allow_html=True)
 
     st.markdown("<div class='title'>💎 ShredX</div>", unsafe_allow_html=True)
-    st.markdown("<div class='subtitle'>Your AI Fitness Coach</div>", unsafe_allow_html=True)
+    st.markdown("<div class='subtitle'>AI Fitness Coach</div>", unsafe_allow_html=True)
 
-    # -------- REGISTER -------- #
+    # REGISTER
     if st.session_state.page == "register":
         st.markdown("<div class='card'>", unsafe_allow_html=True)
         st.subheader("📝 Register")
@@ -96,7 +100,7 @@ if not st.session_state.logged_in:
 
         st.markdown("</div>", unsafe_allow_html=True)
 
-    # -------- LOGIN -------- #
+    # LOGIN
     else:
         st.markdown("<div class='card'>", unsafe_allow_html=True)
         st.subheader("🔐 Login")
@@ -175,7 +179,7 @@ else:
     Weight: {weight}
     Goal: {goal}
 
-    Give workout, diet, motivation.
+    Give workout, diet, and motivation.
     """
 
     for msg in st.session_state.messages:
@@ -192,8 +196,8 @@ else:
                 messages=[{"role": "system", "content": system_prompt}] + st.session_state.messages
             )
             reply = response.choices[0].message.content
-        except:
-            reply = "Error occurred"
+        except Exception as e:
+            reply = f"Error: {str(e)}"
 
         st.session_state.messages.append({"role": "assistant", "content": reply})
         st.rerun()
