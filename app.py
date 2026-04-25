@@ -8,7 +8,8 @@ import random
 st.set_page_config(page_title="ShredX", page_icon="💎", layout="wide")
 
 # ---------------- API ---------------- #
-API_KEY = "ADD YOUR GROQ API ID HERE"
+import os
+API_KEY = os.getenv("GROQ_API_KEY")
 client = Groq(api_key=API_KEY)
 
 # ---------------- CSS ---------------- #
